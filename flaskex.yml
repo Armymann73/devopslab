@@ -1,0 +1,24 @@
+- hosts: web
+  tasks:
+    - name: archive container image
+      docker_image:
+        name: flaskex
+        archive_path: /home/flaskex.tar
+        source: pull
+        state: present
+    - name: fetch archived image
+      fetch:
+        src: /home/flaskex.tar
+        dest: ./flaskex.tar
+        flat: true
+    - name: copy tar to host
+      copy:
+        src: ./flaskex.tar
+        dest: /home/flaskex.tar
+
+    - name: load container from tar
+      docker_image:
+        name: flaskex
+        load_path: /home/flaskex.tar
+        state: present
+        source: load
